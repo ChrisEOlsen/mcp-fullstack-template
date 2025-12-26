@@ -22,12 +22,16 @@ services:
       - proxy
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.${APP_NAME}-backend.entrypoints=web"
+      - "traefik.http.routers.${APP_NAME}-backend.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.${APP_NAME}-backend.middlewares=redirect-to-https"
       - "traefik.http.services.${APP_NAME}-backend-service.loadbalancer.server.port=80"
       - "traefik.http.routers.${APP_NAME}-backend-secure.entrypoints=websecure"
       - "traefik.http.routers.${APP_NAME}-backend-secure.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
       - "traefik.http.routers.${APP_NAME}-backend-secure.priority=100"
       - "traefik.http.routers.${APP_NAME}-backend-secure.tls=true"
       - "traefik.http.routers.${APP_NAME}-backend-secure.tls.certresolver=cloudflare"
+      - "traefik.http.routers.${APP_NAME}-backend-secure.middlewares=secure-headers@docker"
       - "traefik.http.routers.${APP_NAME}-backend-secure.service=${APP_NAME}-backend-service"
 
   frontend:
@@ -45,6 +49,9 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
+      - DOMAIN=${DOMAIN}
+      - EXPECTED_HMAC_SECRET=${EXPECTED_HMAC_SECRET}
+      - API_PREFIX=${API_PREFIX}
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
@@ -68,6 +75,8 @@ services:
     image: my-mcp-server
     container_name: mcp
     user: "${UID}:${GID}"
+    env_file:
+      - ./.env
     volumes:
       - .:/workspace
       - /var/run/docker.sock:/var/run/docker.sock

@@ -160,3 +160,45 @@
 2025-12-26 05:15:45,013 - backend - INFO - Database tables checked/created successfully.
 2025-12-26 05:15:45,014 - backend - INFO - 🏁 App startup complete, ready to accept requests.
 2025-12-26 05:15:55,794 - backend - INFO - 🛑 App shutdown complete.
+2025-12-26 15:47:29,225 - backend - INFO - 🚀 Starting application...
+2025-12-26 15:47:29,226 - backend - WARNING - Fetched 'database_url' from environment variable. For production, use secrets_loader.
+2025-12-26 15:47:29,226 - backend - INFO - Creating new SQLAlchemy async engine.
+2025-12-26 15:47:29,401 - backend - INFO - Creating database tables if they don't exist...
+2025-12-26 15:47:29,410 - backend - INFO - Database tables checked/created successfully.
+2025-12-26 15:47:29,410 - backend - INFO - 🏁 App startup complete, ready to accept requests.
+2025-12-26 15:48:20,030 - backend - INFO - 🛑 App shutdown complete.
+2025-12-26 15:56:43,219 - backend - INFO - 🚀 Starting application...
+2025-12-26 15:56:43,219 - backend - WARNING - Fetched 'database_url' from environment variable. For production, use secrets_loader.
+2025-12-26 15:56:43,219 - backend - INFO - Creating new SQLAlchemy async engine.
+2025-12-26 15:56:43,290 - backend - INFO - Creating database tables if they don't exist...
+2025-12-26 15:56:43,295 - backend - INFO - Database tables checked/created successfully.
+2025-12-26 15:56:43,295 - backend - INFO - 🏁 App startup complete, ready to accept requests.
+2025-12-26 15:56:43,897 - backend - INFO - 🛑 App shutdown complete.
+2025-12-26 15:56:44,948 - backend - INFO - 🚀 Starting application...
+2025-12-26 15:56:44,948 - backend - WARNING - Fetched 'database_url' from environment variable. For production, use secrets_loader.
+2025-12-26 15:56:44,948 - backend - INFO - Creating new SQLAlchemy async engine.
+2025-12-26 15:56:45,015 - backend - INFO - Creating database tables if they don't exist...
+2025-12-26 15:56:45,019 - backend - INFO - Database tables checked/created successfully.
+2025-12-26 15:56:45,020 - backend - INFO - 🏁 App startup complete, ready to accept requests.
+2025-12-26 15:58:04,776 - backend - INFO - 🛑 App shutdown complete.
+2025-12-26 15:58:05,389 - backend - INFO - 🚀 Starting application...
+2025-12-26 15:58:05,389 - backend - WARNING - Fetched 'database_url' from environment variable. For production, use secrets_loader.
+2025-12-26 15:58:05,389 - backend - INFO - Creating new SQLAlchemy async engine.
+2025-12-26 15:58:05,457 - backend - INFO - Creating database tables if they don't exist...
+2025-12-26 15:58:05,461 - backend - INFO - Database tables checked/created successfully.
+2025-12-26 15:58:05,461 - backend - INFO - 🏁 App startup complete, ready to accept requests.
+2025-12-26 16:00:50,891 - backend - INFO - 🛑 App shutdown complete.
+2025-12-26 16:00:53,964 - backend - INFO - 🚀 Starting application...
+2025-12-26 16:00:53,964 - backend - WARNING - Fetched 'database_url' from environment variable. For production, use secrets_loader.
+2025-12-26 16:00:53,964 - backend - INFO - Creating new SQLAlchemy async engine.
+2025-12-26 16:00:54,135 - backend - INFO - Creating database tables if they don't exist...
+2025-12-26 16:00:54,141 - backend - INFO - Database tables checked/created successfully.
+2025-12-26 16:00:54,141 - backend - INFO - 🏁 App startup complete, ready to accept requests.
+2025-12-26 16:08:42,243 - backend - INFO - 🛑 App shutdown complete.
+2025-12-26 16:08:45,213 - backend - INFO - 🚀 Starting application...
+2025-12-26 16:08:45,213 - backend - WARNING - Fetched 'database_url' from environment variable. For production, use secrets_loader.
+2025-12-26 16:08:45,213 - backend - INFO - Creating new SQLAlchemy async engine.
+2025-12-26 16:08:45,382 - backend - INFO - Creating database tables if they don't exist...
+2025-12-26 16:08:45,387 - backend - INFO - Database tables checked/created successfully.
+2025-12-26 16:08:45,387 - backend - INFO - 🏁 App startup complete, ready to accept requests.
+2025-12-26 16:12:11,400 - backend - INFO - 🛑 App shutdown complete.

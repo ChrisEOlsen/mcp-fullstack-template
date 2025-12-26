@@ -1,30 +1,77 @@
-// middleware.js
 import { NextResponse } from "next/server";
+import { jwtVerify } from "jose";
 
-// This is the Next.js middleware file.
-// It allows you to run code before a request is completed.
-// You can use it for things like authentication, redirects, etc.
-//
-// Read more: https://nextjs.org/docs/app/building-your-application/routing/middleware
+const JWT_COOKIE_NAME = "jwt";
+
+// --- MCP will insert AUTH_REQUIRED_ROUTES here ---
+const AUTH_REQUIRED_ROUTES = [];
+
+// --- MCP will insert ADMIN_ROUTES here ---
+const ADMIN_ROUTES = [];
+
+const EXEMPT_PATHS = [
+  "/login",
+  "/auth/receive",
+  "/api/auth",
+  "/_next",
+  "/favicon.ico",
+];
 
 export async function middleware(req) {
-  // Example: Log the path of every request
-  // console.log("Request path:", req.nextUrl.pathname);
+  const { pathname } = req.nextUrl;
+  const host = req.headers.get("host");
 
-  // Continue to the requested page
+  // 1) skip exempt paths
+  if (EXEMPT_PATHS.some(p => pathname.startsWith(p))) {
+    return NextResponse.next();
+  }
+
+  // 2) Parse JWT to determine authentication status
+  const jwtCookie = req.cookies.get(JWT_COOKIE_NAME);
+  let payload = null;
+
+  if (jwtCookie) {
+    try {
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+      ({ payload } = await jwtVerify(jwtCookie.value, secret));
+    } catch (err) {
+      console.error("❌ Invalid JWT:", err);
+    }
+  }
+
+  // 3) Admin-only routes guard
+  if (ADMIN_ROUTES.some(r => pathname.startsWith(r))) {
+    if (!payload?.email || !payload.isAdmin) {
+      // Redirect to login with the 'admin' role specified
+      const loginUrl = new URL("/login", `https://${host}`);
+      loginUrl.searchParams.set("role", "admin");
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // 4) General authenticated routes guard (after admin check)
+  if (AUTH_REQUIRED_ROUTES.some(r => pathname.startsWith(r))) {
+    if (!payload?.email) {
+      // If it's an API route, send a 401 Unauthorized error
+      if (pathname.startsWith("/api/")) {
+        return NextResponse.json(
+          { error: "Authentication required" },
+          { status: 401 }
+        );
+      }
+      
+      // Otherwise, it's a page, so redirect to login
+      return NextResponse.redirect(new URL("/login", `https://${host}`));
+    }
+  }
+
+  // For all valid, non-exempt requests, just proceed.
   return NextResponse.next();
 }
 
-// The config object specifies which paths the middleware should run on.
-// export const config = {
-//   matcher: [
-//     /*
-//      * Match all request paths except for the ones starting with:
-//      * - api (API routes)
-//      * - _next/static (static files)
-//      * - _next/image (image optimization files)
-//      * - favicon.ico (favicon file)
-//      */
-//     '/((?!api|_next/static|_next/image|favicon.ico).*)',
-//   ],
-// }
+export const config = {
+  matcher: [
+    // apply to everything except Next internals and your auth endpoints
+    "/((?!_next/static|_next/image|favicon.ico|api/auth|auth/receive).*) traditions of the project.)",
+  ],
+};

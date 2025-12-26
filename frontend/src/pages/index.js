@@ -15,30 +15,23 @@ const Header = () => {
     );
 };
 
-// Mock fetchUsers function - replace with your actual API call
-// We assume you will create a service file for this
-const fetchUsers = async () => {
-    try {
-        const response = await fetch(`/api/v1/users/`, { cache: 'no-cache' });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Failed to fetch users:", error);
-        return [{ error: "Failed to fetch users. Is the backend running?" }];
-    }
-};
-
-
 export default function HomePage() {
-    const [users, setUsers] = useState([]);
+    const [apiData, setApiData] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const handleFetchUsers = async () => {
+    const handleFetchHello = async () => {
         setLoading(true);
-        const fetchedUsers = await fetchUsers();
-        setUsers(fetchedUsers);
+        try {
+            const response = await fetch(`/api/hello`, { cache: 'no-cache' });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setApiData(data);
+        } catch (error) {
+            console.error("Failed to fetch from /api/hello:", error);
+            setApiData({ error: "Failed to fetch from /api/hello. Is the backend running and configured correctly?" });
+        }
         setLoading(false);
     };
 
@@ -50,16 +43,16 @@ export default function HomePage() {
                     <h1 className="text-4xl font-bold mb-4">Welcome to the Home Page</h1>
                     <p className="text-lg text-gray-400 mb-6">This content is rendered by Next.js!</p>
                     <button 
-                        onClick={handleFetchUsers} 
+                        onClick={handleFetchHello} 
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                         disabled={loading}
                     >
-                        {loading ? 'Loading...' : 'Fetch Users from Backend'}
+                        {loading ? 'Loading...' : 'Fetch Hello from Backend'}
                     </button>
                     <div className="mt-4 text-left">
-                        <h2 className="text-2xl font-bold mb-2">Users:</h2>
+                        <h2 className="text-2xl font-bold mb-2">API Response:</h2>
                         <pre className="bg-gray-800 text-white p-4 rounded whitespace-pre-wrap">
-                            {JSON.stringify(users, null, 2)}
+                            {JSON.stringify(apiData, null, 2)}
                         </pre>
                     </div>
                 </div>
