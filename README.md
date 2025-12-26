@@ -11,7 +11,7 @@ This is a template for creating a simple web application with a ViteJS frontend 
     *   [FastAPI](https://fastapi.tiangolo.com/)
     *   [SQLAlchemy](https://www.sqlalchemy.org/)
     *   [Pydantic](https://pydantic-docs.helpmanual.io/)
-    *   [SQLite](https://www.sqlite.org/index.html)
+    *   [POSTGRES]
 *   **Infrastructure:**
     *   [Docker](https://www.docker.com/)
     *   [Traefik](https://traefik.io/traefik/)
