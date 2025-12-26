@@ -1,38 +1,30 @@
 // middleware.js
-import { getToken } from "next-auth/jwt"
-import { NextResponse } from "next/server"
+import { NextResponse } from "next/server";
 
-// Define protected route patterns
-const AUTH_REQUIRED_ROUTES = ["/stripe", "/onboarding"]
-const ADMIN_ROUTES = ["/admin", "/api/admin"]
+// This is the Next.js middleware file.
+// It allows you to run code before a request is completed.
+// You can use it for things like authentication, redirects, etc.
+//
+// Read more: https://nextjs.org/docs/app/building-your-application/routing/middleware
 
 export async function middleware(req) {
-  const { pathname, origin } = req.nextUrl
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+  // Example: Log the path of every request
+  // console.log("Request path:", req.nextUrl.pathname);
 
-  if (ADMIN_ROUTES.some(route => pathname.startsWith(route))) {
-    if (!token?.email || !token.isAdmin) {
-      const callbackUrl = encodeURIComponent(req.nextUrl.pathname)
-      return NextResponse.redirect(new URL(`/login?callbackUrl=${callbackUrl}`, origin))
-    }
-  }
-
-  if (AUTH_REQUIRED_ROUTES.some(route => pathname.startsWith(route))) {
-    if (!token?.email) {
-      const callbackUrl = encodeURIComponent(req.nextUrl.pathname)
-      return NextResponse.redirect(new URL(`/login?callbackUrl=${callbackUrl}`, origin))
-    }
-  }
-
-  // ✅ For all other routes, proceed without tenant resolution
-  return NextResponse.next()
+  // Continue to the requested page
+  return NextResponse.next();
 }
 
-export const config = {
-  matcher: [
-    "/admin/:path*",
-    "/api/admin/:path*",
-    "/stripe/:path*",
-    "/onboarding/:path*",
-  ],
-}
+// The config object specifies which paths the middleware should run on.
+// export const config = {
+//   matcher: [
+//     /*
+//      * Match all request paths except for the ones starting with:
+//      * - api (API routes)
+//      * - _next/static (static files)
+//      * - _next/image (image optimization files)
+//      * - favicon.ico (favicon file)
+//      */
+//     '/((?!api|_next/static|_next/image|favicon.ico).*)',
+//   ],
+// }
