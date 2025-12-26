@@ -12,14 +12,6 @@ const nextConfig = {
     WATCHPACK_POLLING: "true", // ✅ Improves HMR detection
     NEXTJS_DISABLE_SOURCEMAPS: "true", // ✅ Avoids unnecessary errors
   },
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: "http://backend:80/api/:path*",
-      },
-    ]
-  },
 }
 
 module.exports = nextConfig

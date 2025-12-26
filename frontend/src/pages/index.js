@@ -19,7 +19,7 @@ const Header = () => {
 // We assume you will create a service file for this
 const fetchUsers = async () => {
     try {
-        const response = await fetch(`/api/v1/users/`);
+        const response = await fetch(`/api/v1/users/`, { cache: 'no-cache' });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

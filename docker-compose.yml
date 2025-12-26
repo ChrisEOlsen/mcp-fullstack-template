@@ -23,6 +23,13 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.${APP_NAME}-backend-service.loadbalancer.server.port=80"
+      # Router for API calls - directs traffic to the backend service
+      - "traefik.http.routers.${APP_NAME}-backend-secure.entrypoints=websecure"
+      - "traefik.http.routers.${APP_NAME}-backend-secure.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.${APP_NAME}-backend-secure.priority=100"
+      - "traefik.http.routers.${APP_NAME}-backend-secure.tls=true"
+      - "traefik.http.routers.${APP_NAME}-backend-secure.tls.certresolver=cloudflare"
+      - "traefik.http.routers.${APP_NAME}-backend-secure.service=${APP_NAME}-backend-service"
 
   frontend:
     build:
@@ -50,6 +57,7 @@ services:
       # HTTPS Router – Authentik + secure headers
       - "traefik.http.routers.${APP_NAME}-secure.entrypoints=websecure"
       - "traefik.http.routers.${APP_NAME}-secure.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.${APP_NAME}-secure.priority=50"
       - "traefik.http.routers.${APP_NAME}-secure.tls=true"
       - "traefik.http.routers.${APP_NAME}-secure.tls.certresolver=cloudflare"
       - "traefik.http.routers.${APP_NAME}-secure.middlewares=authentik@docker,secure-headers@docker"
@@ -57,13 +65,6 @@ services:
       # Internal service port
       - "traefik.http.services.${APP_NAME}-service.loadbalancer.server.port=3000"
 
-      # Router for API calls - directs traffic to the backend service
-      - "traefik.http.routers.${APP_NAME}-backend-secure.entrypoints=websecure"
-      - "traefik.http.routers.${APP_NAME}-backend-secure.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.${APP_NAME}-backend-secure.tls=true"
-      - "traefik.http.routers.${APP_NAME}-backend-secure.tls.certresolver=cloudflare"
-      - "traefik.http.routers.${APP_NAME}-backend-secure.service=${APP_NAME}-backend-service"
-      - "traefik.http.services.${APP_NAME}-backend-service.loadbalancer.server.port=80"
     networks:
       - proxy
 
