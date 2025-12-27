@@ -1,4 +1,4 @@
-from app.logging_config import app_logger as logger
+from app.logging_config import backend_logger as logger
 from fastapi import Request
 from starlette.responses import JSONResponse
 import os

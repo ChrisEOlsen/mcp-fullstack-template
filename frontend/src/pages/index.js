@@ -22,7 +22,14 @@ export default function HomePage() {
     const handleFetchHello = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/hello`, { cache: 'no-cache' });
+            const response = await fetch(`/api/hello`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: "Hello from frontend!" }),
+                cache: 'no-cache' 
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

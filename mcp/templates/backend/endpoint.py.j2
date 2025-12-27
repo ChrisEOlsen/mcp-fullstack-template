@@ -7,9 +7,9 @@ from app.crud.crud_{{ resource_name_snake }} import {{ resource_name_snake }} as
 from app.db import connections
 from app.db.schemas.{{ resource_name_snake }} import {{ resource_name_pascal }}, {{ resource_name_pascal }}Create, {{ resource_name_pascal }}Update
 
-router = APIRouter()
+router = APIRouter(tags=["{{ resource_name_plural_pascal }}"], redirect_slashes=False)
 
-@router.post("/", response_model={{ resource_name_pascal }})
+@router.post("/{{ resource_name_plural_snake }}/", response_model={{ resource_name_pascal }})
 async def create_{{ resource_name_snake }}(
     *,
     db: AsyncSession = Depends(connections.get_db),
@@ -21,7 +21,7 @@ async def create_{{ resource_name_snake }}(
     {{ resource_name_snake }} = await crud_{{ resource_name_snake }}.create(db, obj_in={{ resource_name_snake }}_in)
     return {{ resource_name_snake }}
 
-@router.get("/", response_model=List[{{ resource_name_pascal }}])
+@router.get("/{{ resource_name_plural_snake }}/", response_model=List[{{ resource_name_pascal }}])
 async def read_{{ resource_name_plural_snake }}(
     db: AsyncSession = Depends(connections.get_db),
     skip: int = 0,
@@ -32,3 +32,44 @@ async def read_{{ resource_name_plural_snake }}(
     """
     {{ resource_name_plural_snake }} = await crud_{{ resource_name_snake }}.get_multi(db, skip=skip, limit=limit)
     return {{ resource_name_plural_snake }}
+
+@router.get("/{{ resource_name_plural_snake }}/{id}", response_model={{ resource_name_pascal }})
+async def read_{{ resource_name_snake }}_by_id(
+    id: int,
+    db: AsyncSession = Depends(connections.get_db),
+):
+    """
+    Retrieve a single {{ resource_name_snake }} by ID.
+    """
+    {{ resource_name_snake }} = await crud_{{ resource_name_snake }}.get(db, id=id)
+    if not {{ resource_name_snake }}:
+        raise HTTPException(status_code=404, detail="{{ resource_name_pascal }} not found")
+    return {{ resource_name_snake }}
+
+@router.put("/{{ resource_name_plural_snake }}/{id}", response_model={{ resource_name_pascal }})
+async def update_{{ resource_name_snake }}(
+    id: int,
+    {{ resource_name_snake }}_in: {{ resource_name_pascal }}Update,
+    db: AsyncSession = Depends(connections.get_db),
+):
+    """
+    Update a {{ resource_name_snake }} by ID.
+    """
+    {{ resource_name_snake }} = await crud_{{ resource_name_snake }}.get(db, id=id)
+    if not {{ resource_name_snake }}:
+        raise HTTPException(status_code=404, detail="{{ resource_name_pascal }} not found")
+    {{ resource_name_snake }} = await crud_{{ resource_name_snake }}.update(db, db_obj={{ resource_name_snake }}, obj_in={{ resource_name_snake }}_in)
+    return {{ resource_name_snake }}
+
+@router.delete("/{{ resource_name_plural_snake }}/{id}", response_model={{ resource_name_pascal }})
+async def delete_{{ resource_name_snake }}(
+    id: int,
+    db: AsyncSession = Depends(connections.get_db),
+):
+    """
+    Delete a {{ resource_name_snake }} by ID.
+    """
+    {{ resource_name_snake }} = await crud_{{ resource_name_snake }}.delete(db, id=id)
+    if not {{ resource_name_snake }}:
+        raise HTTPException(status_code=404, detail="{{ resource_name_pascal }} not found")
+    return {{ resource_name_snake }}

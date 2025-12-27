@@ -3,7 +3,14 @@ import { signedFetch } from "@/lib/signedFetch";
 export default async function handler(req, res) {
   try {
     // 1. Forward the request to the FastAPI backend endpoint.
-    const backendResponse = await signedFetch("/hello", req);
+    const backendResponse = await signedFetch(
+      "/hello",
+      req,
+      {
+        method: req.method,
+        body: req.body ? JSON.stringify(req.body) : undefined,
+      }
+    );
 
     if (!backendResponse.ok) {
       const errorText = await backendResponse.text();

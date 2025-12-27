@@ -103,8 +103,8 @@ d.  **Create CRUD Operations File (Leveraging CRUDBase):**
     my_resource_crud = CRUDMyResource(MyResource)
     ```
 
-e.  **Create FastAPI Endpoint File:**
-    Create a new Python file in `backend/app/api/v1/endpoints/`, for example, `backend/app/api/v1/endpoints/my_resources.py`:
+e.  **Create FastAPI Endpoint File (`backend/app/api/v1/endpoints/my_resources.py`):**
+    Create a new Python file in `backend/app/api/v1/endpoints/my_resources.py`:
 
     ```python
     # backend/app/api/v1/endpoints/my_resources.py
@@ -116,16 +116,17 @@ e.  **Create FastAPI Endpoint File:**
     from app.db.schemas.my_resource import MyResource, MyResourceCreate, MyResourceUpdate
     from app.crud.crud_my_resource import my_resource_crud
 
-    router = APIRouter()
+    # Initialize APIRouter with tags and disable trailing slash redirects
+    router = APIRouter(tags=["MyResources"], redirect_slashes=False)
 
-    @router.post("/", response_model=MyResource)
+    @router.post("/my_resources/", response_model=MyResource)
     async def create_my_resource(
         resource_in: MyResourceCreate,
         db: AsyncSession = Depends(get_session)
     ):
         return await my_resource_crud.create(db=db, obj_in=resource_in)
 
-    @router.get("/{resource_id}", response_model=MyResource)
+    @router.get("/my_resources/{resource_id}", response_model=MyResource)
     async def read_my_resource(
         resource_id: int,
         db: AsyncSession = Depends(get_session)
@@ -135,7 +136,7 @@ e.  **Create FastAPI Endpoint File:**
             raise HTTPException(status_code=404, detail="Resource not found")
         return resource
 
-    @router.get("/", response_model=List[MyResource])
+    @router.get("/my_resources/", response_model=List[MyResource])
     async def read_my_resources(
         skip: int = 0,
         limit: int = 100,
@@ -143,7 +144,7 @@ e.  **Create FastAPI Endpoint File:**
     ):
         return await my_resource_crud.get_multi(db=db, skip=skip, limit=limit)
 
-    @router.put("/{resource_id}", response_model=MyResource)
+    @router.put("/my_resources/{resource_id}", response_model=MyResource)
     async def update_my_resource(
         resource_id: int,
         resource_in: MyResourceUpdate,
@@ -154,7 +155,7 @@ e.  **Create FastAPI Endpoint File:**
             raise HTTPException(status_code=404, detail="Resource not found")
         return await my_resource_crud.update(db=db, db_obj=resource, obj_in=resource_in)
 
-    @router.delete("/{resource_id}", response_model=MyResource)
+    @router.delete("/my_resources/{resource_id}", response_model=MyResource)
     async def delete_my_resource(
         resource_id: int,
         db: AsyncSession = Depends(get_session)
@@ -166,7 +167,7 @@ e.  **Create FastAPI Endpoint File:**
     ```
 
 f.  **Include Router in `backend/app/api/v1/routers.py`:**
-    Open `backend/app/api/v1/routers.py` and add an import for your new endpoint, then include its router:
+    Open `backend/app/api/v1/routers.py` and add an import for your new endpoint, then include its router **without a `prefix` argument**:
 
     ```python
     # backend/app/api/v1/routers.py
@@ -176,9 +177,9 @@ f.  **Include Router in `backend/app/api/v1/routers.py`:**
     from app.api.v1.endpoints import my_resources # Add this line (plural for resource)
 
     api_router = APIRouter()
-    api_router.include_router(users.router, prefix="/users", tags=["Users"])
-    api_router.include_router(hello.router, prefix="/hello", tags=["Hello"])
-    api_router.include_router(my_resources.router, prefix="/my_resources", tags=["MyResources"]) # Add this line
+    api_router.include_router(users.router, tags=["Users"])
+    api_router.include_router(hello.router, tags=["Hello"])
+    api_router.include_router(my_resources.router, tags=["MyResources"]) # Add this line
     ```
 
 g.  **Run Database Migrations:**
@@ -232,6 +233,7 @@ a.  **Create Next.js API Handler (`index.js` for collection operations):**
 
     async function handleGet(req, res) {
       try {
+        // Path here should be the full path relative to API_PREFIX, e.g., /my_resources
         const backendResponse = await signedFetch("/my_resources");
         const data = await backendResponse.json();
         if (!backendResponse.ok) {
@@ -246,6 +248,7 @@ a.  **Create Next.js API Handler (`index.js` for collection operations):**
 
     async function handlePost(req, res) {
       try {
+        // Path here should be the full path relative to API_PREFIX, e.g., /my_resources
         const backendResponse = await signedFetch("/my_resources", {
           method: 'POST',
           body: JSON.stringify(req.body),
@@ -299,6 +302,7 @@ b.  **Create Next.js API Handler (`[id].js` for item operations):**
 
     async function handleGet(req, res, my_resource_id) {
       try {
+        // Path here should be the full path relative to API_PREFIX, e.g., /my_resources/{my_resource_id}
         const backendResponse = await signedFetch(`/my_resources/${my_resource_id}`);
         const data = await backendResponse.json();
         if (!backendResponse.ok) {
@@ -313,6 +317,7 @@ b.  **Create Next.js API Handler (`[id].js` for item operations):**
 
     async function handlePut(req, res, my_resource_id) {
       try {
+        // Path here should be the full path relative to API_PREFIX, e.g., /my_resources/{my_resource_id}
         const backendResponse = await signedFetch(`/my_resources/${my_resource_id}`, {
           method: 'PUT',
           body: JSON.stringify(req.body),
@@ -330,6 +335,7 @@ b.  **Create Next.js API Handler (`[id].js` for item operations):**
 
     async function handleDelete(req, res, my_resource_id) {
       try {
+        // Path here should be the full path relative to API_PREFIX, e.g., /my_resources/{my_resource_id}
         const backendResponse = await signedFetch(`/my_resources/${my_resource_id}`, {
           method: 'DELETE',
         });
@@ -397,7 +403,7 @@ This protects a frontend API handler (and its corresponding backend endpoint) so
 **Frontend Steps:**
 
 a.  **Follow "Adding a New API Resource" Steps (Backend & Frontend Handlers):**
-    First, create your backend endpoint, model, schema, CRUD, and frontend API handlers (`index.js` and `[id].js`) as described in Section 1. Let's assume your frontend API handler is at `/api/my_user_data` (which translates to `/api/my_user_data/index.js` and optionally `/api/my_user_data/[my_user_data_id].js`).
+    First, create your backend endpoint, model, schema, CRUD, and frontend API handlers (`index.js` and `[id].js`) as described in Section 1. Let's assume your frontend API resource is at `/api/my_user_data` (which translates to `/api/my_user_data/index.js` and optionally `/api/my_user_data/[my_user_data_id].js`).
 
 b.  **Enable Authentication Check in Frontend API Handlers:**
     In `frontend/src/pages/api/my_user_data/index.js` (and `[my_user_data_id].js` if applicable), uncomment and use the `isAuthenticated` check:
