@@ -13,6 +13,9 @@ services:
   backend:
     build:
       context: ./backend
+      args:
+        - UID=${UID}
+        - GID=${GID}
     container_name: backend
     user: "${UID}:${GID}"
     volumes:
@@ -29,6 +32,9 @@ services:
   
     build:
       context: ./frontend
+      args:
+        - UID=${UID}
+        - GID=${GID}
     container_name: frontend
     volumes:
       - ./frontend:/app
@@ -66,6 +72,9 @@ services:
   mcp:
     build:
       context: ./mcp
+      args:
+        - UID=${UID}
+        - GID=${GID}
     image: my-mcp-server
     container_name: mcp
     user: "${UID}:${GID}"

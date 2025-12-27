@@ -8,12 +8,18 @@ COPY pyproject.toml .
 RUN uv pip compile pyproject.toml -o requirements.txt
 RUN uv pip install --system --no-cache -r requirements.txt
 
-# Now, copy the application code
-COPY ./app /app/app
-COPY ./templates /app/templates
+# Create a non-root user with the same UID and GID as the host
+# This avoids permission issues with mounted volumes.
+ARG UID=1000
+ARG GID=1000
+RUN groupadd --gid $GID user && \
+    useradd --uid $UID --gid $GID -m user
 
-# Create a non-root user and switch to it for runtime
-RUN useradd -m -u 1000 user
+# Now, copy the application code and set permissions
+COPY --chown=user:user ./app /app/app
+COPY --chown=user:user ./templates /app/templates
+
+# Switch to the non-root user
 USER user
 
 ENV PYTHONPATH=/app
