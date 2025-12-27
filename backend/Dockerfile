@@ -12,7 +12,8 @@ COPY pyproject.toml .
 # 3. Use uv to resolve and install dependencies system-wide
 # We compile the TOML to a requirements list in memory, then install it.
 # --system: Installs to Python's global environment (so no venv needed inside Docker)
-RUN uv pip install --system --no-cache -r requirements.txt
+RUN uv pip compile pyproject.toml -o requirements.txt && \
+    uv pip install --system --no-cache -r requirements.txt
 
 # 4. Create a non-root user with the same UID and GID as the host
 # This avoids permission issues with mounted volumes.
