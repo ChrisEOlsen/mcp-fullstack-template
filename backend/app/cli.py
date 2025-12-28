@@ -112,8 +112,11 @@ def create_resource(
 
     # --- Modify models/__init__.py for Alembic autodiscovery ---
     models_init_path = os.path.join(base_paths["backend"], "models/__init__.py")
-    with open(models_init_path, "a") as f:
-        f.write(f"\nfrom .{ctx["resource_name_snake"]} import {ctx["resource_name_pascal"]}")
+    new_model_import = f"from .{ctx['resource_name_snake']} import {ctx['resource_name_pascal']}"
+    with open(models_init_path, "r+") as f:
+        content = f.read()
+        if new_model_import not in content:
+            f.write(f"\n{new_model_import}")
     typer.echo("Updated models package for autodiscovery.")
     
     typer.secho(f"Successfully created resource '{resource_name}'.", fg=typer.colors.GREEN)

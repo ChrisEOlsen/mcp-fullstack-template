@@ -99,7 +99,15 @@ def create_resource(resource_name: str, fields: List[str]):
             content = f.read()
             new_import = f"from app.api.v1.endpoints import {r_plural}"
             if new_import not in content:
-                content = new_import + "\n" + content
+                lines = content.splitlines()
+                imports = [line for line in lines if line.startswith("from")]
+                other_lines = [line for line in lines if not line.startswith("from") and line.strip()]
+                
+                if new_import not in imports:
+                    imports.append(new_import)
+                    imports.sort()
+                
+                content = "\n".join(imports) + "\n\n" + "\n".join(other_lines)
             
             new_router = f"api_router.include_router({r_plural}.router)"
             if new_router not in content:
@@ -110,8 +118,11 @@ def create_resource(resource_name: str, fields: List[str]):
     # --- Modify models/__init__.py ---
     models_init_path = os.path.join(base_paths["backend"], "models/__init__.py")
     if os.path.exists(models_init_path):
-        with open(models_init_path, "a") as f:
-            f.write(f"\nfrom .{r_snake} import {ctx['resource_name_pascal']}")
+        new_model_import = f"from .{r_snake} import {ctx['resource_name_pascal']}"
+        with open(models_init_path, "r+") as f:
+            lines = f.read().splitlines()
+            if new_model_import not in lines:
+                f.write(f"\n{new_model_import}")
 
     return f"Created resource {resource_name}. Generated {len(generated_list)} files."
 
