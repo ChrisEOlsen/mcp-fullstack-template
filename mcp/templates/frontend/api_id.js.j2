@@ -1,0 +1,58 @@
+// frontend/src/pages/api/{{ resource_name_plural_snake }}/[{{ resource_name_snake }}Id].js
+import { signedFetch } from "@/lib/signedFetch";
+
+export default async function handler(req, res) {
+  const { {{ resource_name_snake }}Id } = req.query;
+
+  if (req.method === 'PUT') {
+    return handlePut(req, res, {{ resource_name_snake }}Id);
+  }
+
+  if (req.method === 'DELETE') {
+    return handleDelete(req, res, {{ resource_name_snake }}Id);
+  }
+
+  res.setHeader('Allow', ['PUT', 'DELETE']);
+  return res.status(405).end(`Method ${req.method} Not Allowed`);
+}
+
+async function handlePut(req, res, {{ resource_name_snake }}Id) {
+  try {
+    const backendResponse = await signedFetch(`/{{ resource_name_plural_snake }}/${{ {{ resource_name_snake }}Id }}`, req, {
+      method: 'PUT',
+      body: JSON.stringify(req.body),
+    });
+    const data = await backendResponse.json();
+    if (!backendResponse.ok) {
+      return res.status(backendResponse.status).json({ error: data.detail || 'Failed to update {{ resource_name_snake }}' });
+    }
+    return res.status(200).json(data);
+  } catch (err) {
+    console.error(`Error updating {{ resource_name_snake }} ${ {{ resource_name_snake }}Id }}:`, err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+async function handleDelete(req, res, {{ resource_name_snake }}Id) {
+  try {
+    const backendResponse = await signedFetch(`/{{ resource_name_plural_snake }}/${{ {{ resource_name_snake }}Id }}`, req, {
+      method: 'DELETE',
+    });
+
+    if (!backendResponse.ok) {
+      const data = await backendResponse.json().catch(() => ({}));
+      return res.status(backendResponse.status).json({ error: data.detail || 'Failed to delete {{ resource_name_snake }}' });
+    }
+    
+    if (backendResponse.status === 204) {
+        return res.status(204).end();
+    }
+
+    const data = await backendResponse.json();
+    return res.status(200).json(data);
+
+  } catch (err) {
+    console.error(`Error deleting {{ resource_name_snake }} ${ {{ resource_name_snake }}Id }}:`, err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
