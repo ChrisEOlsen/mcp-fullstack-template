@@ -70,7 +70,6 @@ To use the MCP tools (e.g., `create-resource`, `apply-migrations`) via the Gemin
     "default_api": {
       "command": "docker",
       "args": [
-        "compose",
         "exec",
         "-i",
         "backend",
