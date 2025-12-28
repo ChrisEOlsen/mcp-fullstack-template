@@ -69,23 +69,7 @@ services:
     networks:
       - proxy
 
-  mcp:
-    build:
-      context: ./mcp
-      args:
-        - UID=${UID}
-        - GID=${GID}
-        - DOCKER_GID=${DOCKER_GID}
-    image: my-mcp-server
-    container_name: mcp
-    user: "${UID}:${GID}"
-    env_file:
-      - ./.env
-    volumes:
-      - .:/workspace
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - proxy
+
 
 networks:
   proxy:

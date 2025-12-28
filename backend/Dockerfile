@@ -1,31 +1,28 @@
 FROM python:3.10-slim
 
-# 1. Install 'uv' directly from its official image
-# This copies a single static binary. It's tiny and instant.
+# 1. Install 'uv'
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 WORKDIR /code
+ENV PYTHONPATH "${PYTHONPATH}:/code"
 
-# 2. Copy ONLY the project definition first (for Docker caching)
+# 2. Copy dependency files and install
 COPY pyproject.toml .
-
-# 3. Use uv to resolve and install dependencies system-wide
-# We compile the TOML to a requirements list in memory, then install it.
-# --system: Installs to Python's global environment (so no venv needed inside Docker)
 RUN uv pip compile pyproject.toml -o requirements.txt && \
     uv pip install --system --no-cache -r requirements.txt
 
-# 4. Create a non-root user with the same UID and GID as the host
-# This avoids permission issues with mounted volumes.
+# 3. Create a non-root user
 ARG UID=1000
 ARG GID=1000
 RUN groupadd --gid $GID user && \
     useradd --uid $UID --gid $GID -m user
 
-# 5. Copy the application code and set permissions
+# 4. Copy all application files
 COPY --chown=user:user ./app ./app
+COPY --chown=user:user ./alembic ./alembic
+COPY --chown=user:user ./alembic.ini .
 
-# 6. Switch to the non-root user
+# 5. Switch to the non-root user
 USER user
 
 EXPOSE 80
