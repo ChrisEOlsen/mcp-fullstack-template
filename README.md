@@ -67,20 +67,18 @@ To use the MCP tools (e.g., `create-resource`, `apply-migrations`) via the Gemin
 **`settings.json` Entry:**
 
 ```json
-"default_api": {
-  "command": "docker",
-  "args": [
-    "compose",
-    "run",
-    "--rm",
-    "--user",
-    "$(id -u):$(id -g)",
-    "backend",
-    "python",
-    "-m",
-    "app.cli"
-  ]
-}
+    "default_api": {
+      "command": "docker",
+      "args": [
+        "compose",
+        "exec",
+        "-i",
+        "backend",
+        "python",
+        "-m",
+        "app.mcp_server" 
+      ]
+    }
 ```
 
 **How to Use:**
