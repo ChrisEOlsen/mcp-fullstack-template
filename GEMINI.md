@@ -19,4 +19,4 @@ If the user's prompt provides **insufficient information** to fully implement th
 
 
 ### Unecessary Steps During Development Mode
-This tech stack makes use of Hot Module Replacement. So only attempt to restart the frontend service if you know its completely necessary.
+This tech stack makes use of Hot Module Replacement. But if you must rebuild the application its best just to run docker compose up -d --build <container-name>
