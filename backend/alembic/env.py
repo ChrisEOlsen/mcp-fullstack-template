@@ -9,11 +9,7 @@ from alembic import context
 
 # Import your models here for 'autogenerate' support
 from app.db.base_class import Base
-from app.models.message import Message
-from app.models.todo_list import TodoList
-from app.models.todo_item import TodoItem
-from app.models.vision_goal import VisionGoal
-from app.models.vision_subgoal import VisionSubgoal
+from app import models
 # --- Add any other models you create here ---
 
 load_dotenv()
