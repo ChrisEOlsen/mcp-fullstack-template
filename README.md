@@ -1,99 +1,155 @@
-# Vite.js + FastAPI Web Application Template
+# FastAPI + Next.js Fullstack Template (MCP Enabled)
 
-This is a template repository for building full-stack web applications with a Vite.js (React) frontend and a FastAPI backend.
+A modern, production-ready full-stack template featuring a **FastAPI** backend and **Next.js 15** frontend. This project is designed with an "AI-First" workflow in mind, integrating a **Model Context Protocol (MCP)** server to automate boilerplate generation and database management directly from your AI agent.
 
-## Project Structure
+## 🚀 Features
 
-*   **`backend/`**: FastAPI backend service.
-*   **`frontend/`**: Vite.js (React) frontend application.
-*   **`postgres_data/`**: Docker volume for PostgreSQL data.
+*   **Backend:**
+    *   **FastAPI**: High-performance, easy-to-learn web framework.
+    *   **SQLAlchemy (Async)**: Modern ORM with async support.
+    *   **PostgreSQL**: Robust relational database.
+    *   **Alembic**: Database migration management.
+    *   **MCP Integration**: Built-in tools to scaffold resources and manage DBs.
+*   **Frontend:**
+    *   **Next.js 15**: React framework for production.
+    *   **Tailwind CSS 4**: Utility-first CSS framework.
+    *   **Framer Motion**: Production-ready animation library.
+*   **DevOps:**
+    *   **Docker Compose**: Unified development environment.
+    *   **Traefik Ready**: Pre-configured labels for Traefik reverse proxy.
 
-## Getting Started
+## 🛠️ Project Structure
+
+*   **`backend/`**: Python FastAPI application.
+    *   `app/mcp_server.py`: The MCP server exposing tools to your agent.
+    *   `app/templates/`: Jinja2 templates for code generation.
+*   **`frontend/`**: Next.js application.
+*   **`postgres_data/`**: Persistent storage for the database.
+
+## 🏁 Getting Started
+
+### Prerequisites
+
+*   Docker & Docker Compose
+*   Git
+*   An external Docker network named `proxy` (or modify `docker-compose.yml` to remove the external network constraint).
+
+### Installation
 
 1.  **Clone the repository:**
 
     ```bash
     git clone <repository-url>
-    cd vite-js-fastapi-webapp
+    cd mcp-fullstack-template
     ```
 
-2.  **Environment Variables:**
+2.  **Configure Environment:**
 
-    Create a `.env` file in the project root based on `.env.example` (if provided) and fill in your database credentials and other necessary environment variables.
+    Create a `.env` file in the root directory. You can use the following template:
 
+    ```env
+    # User/Group ID for file permissions (run `id -u` and `id -g`)
+    UID=1000
+    GID=1000
+
+    # Application Settings
+    APP_NAME=myapp
+    DOMAIN=myapp.localhost
+    API_PREFIX=/api/v1
+    
+    # Database
+    DB_USER=postgres
+    DB_PASSWORD=secret
+    
+    # Security / Auth
+    EXPECTED_HMAC_SECRET=supersecretkey
+    BACKEND_URL=http://backend:80
+    ```
+
+3.  **Create the Proxy Network (if not exists):**
+    
+    This template assumes a Traefik setup. If you just want to run it locally without Traefik, remove the `networks` and `labels` sections from `docker-compose.yml` and expose ports directly.
+    
     ```bash
-    cp .env.example .env
-    # Edit .env with your settings
+    docker network create proxy
     ```
 
-3.  **Build and Run with Docker Compose:**
+4.  **Build and Run:**
 
     ```bash
     docker compose up --build -d
     ```
 
-    This will:
+    *   Frontend: `http://localhost:5173` (or via your configured Traefik domain)
+    *   Backend Docs: `http://localhost/docs` (via Traefik) or check logs.
 
-    *   Build the `backend` and `frontend` Docker images.
-    *   Start the PostgreSQL database service.
-    *   Start the FastAPI backend service.
-    *   Start the Vite.js frontend development server.
+## 🤖 MCP Tools Integration
 
-4.  **Access the Application:**
+This project includes a Model Context Protocol (MCP) server running inside the backend container. This allows your AI assistant (like Gemini CLI) to perform complex tasks automatically.
 
-    *   Frontend: `http://localhost:3000` (or whatever port you configured)
-    *   Backend API Docs: `http://localhost:80/docs` (or whatever port you configured)
+### Configuration
 
-## Database Migrations (Alembic)
-
-Migrations are managed by Alembic within the `backend` service. After making changes to your SQLAlchemy models, you can generate and apply migrations using the integrated MCP CLI:
-
-*   **Generate a new migration:**
-
-    ```bash
-    docker compose run --rm backend python -m app.cli apply-migrations --message "Your descriptive message"
-    ```
-
-*   **Upgrade the database to the latest revision:**
-
-    ```bash
-    docker compose run --rm backend python -m app.cli apply-migrations
-    ```
-
-## Gemini CLI Configuration for MCP Tools
-
-To use the MCP tools (e.g., `create-resource`, `apply-migrations`) via the Gemini CLI, update your `settings.json` file with the following `default_api` entry. This configuration runs commands within the `backend` service container, which now hosts the MCP CLI.
-
-**`settings.json` Entry:**
+Add the following to your Gemini CLI `settings.json` (or equivalent MCP client config) to register the tools:
 
 ```json
-    "default_api": {
-      "command": "docker",
-      "args": [
-        "exec",
-        "-i",
-        "backend",
-        "python",
-        "-m",
-        "app.mcp_server" 
-      ]
-    }
+"default_api": {
+  "command": "docker",
+  "args": [
+    "exec",
+    "-i",
+    "backend",
+    "python",
+    "-m",
+    "app.mcp_server" 
+  ]
+}
 ```
 
-**How to Use:**
+### Available Tools
 
-Once configured, you can call the MCP commands directly from the Gemini CLI.
+#### 1. `create_resource`
 
-*   **To create a new resource (e.g., 'task' with 'description' and 'is_completed' fields):**
+Scaffolds a complete vertical slice of the application (Database -> API -> Frontend).
+
+*   **Usage:**
     ```bash
-    create-resource task "description:string:true" "is_completed:boolean:false"
+    create_resource <resource_name> <field1:type:required> <field2:type:required> ...
     ```
-*   **To apply database migrations:**
+*   **Example:**
     ```bash
-    apply-migrations --message "A descriptive migration message"
+    create_resource "todo_item" "title:string:true" "is_completed:boolean:false" "due_date:datetime:false"
     ```
+*   **What it generates:**
+    *   **Backend:** SQLAlchemy Model, Pydantic Schema, CRUD utilities, API Endpoint.
+    *   **Frontend:** API Client functions.
+    *   **Wiring:** Automatically registers the new router in FastAPI.
 
-**Important Notes:**
+#### 2. `apply_migrations`
 
-*   The `--user root` flag is necessary for `create-resource` to write files into the `frontend/src` directory, as the `backend` container's default user typically doesn't have cross-service write permissions.
-*   Ensure your `docker compose` services (especially `postgres` and `backend`) are running before attempting to use commands like `apply-migrations`.
+Manages database schema changes using Alembic.
+
+*   **Usage:**
+    ```bash
+    apply_migrations --message "Added todo_item table"
+    ```
+*   **What it does:**
+    *   Detects changes in your SQLAlchemy models (including those created by `create_resource`).
+    *   Generates a migration script.
+    *   Applies the migration to the database immediately.
+
+## 📝 Workflow Example
+
+1.  **Plan a feature:** "I want a blog post system."
+2.  **Scaffold:** 
+    ```bash
+    create_resource blog_post "title:string:true" "content:text:true" "published:boolean:false"
+    ```
+3.  **Migrate:** 
+    ```bash
+    apply_migrations --message "Add blog posts"
+    ```
+4.  **Develop:** The basic API and frontend hooks are now ready. You can now implement the UI components in `frontend/src/pages` using the generated API hooks.
+
+## 📜 License
+
+[MIT](LICENSE)
