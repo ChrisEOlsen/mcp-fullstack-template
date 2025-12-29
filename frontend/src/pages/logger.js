@@ -308,9 +308,8 @@ export default function LoggerPage() {
     if (selectedCategory) {
         return (
             <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans">
-                {/* Header */}
-                <header className="h-20 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur fixed top-0 w-full z-10 flex items-center justify-between px-6 lg:px-12">
-                    <div className="flex items-center gap-4">
+                <main className="pt-24 pb-12 px-6 lg:px-12 overflow-x-auto">
+                    <div className="flex items-center gap-4 mb-8">
                         <button 
                             onClick={() => setSelectedCategory(null)} 
                             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-800 text-zinc-400 transition-colors"
@@ -321,24 +320,22 @@ export default function LoggerPage() {
                             <h1 className="text-xl font-bold tracking-tight">{selectedCategory.title}</h1>
                             <p className="text-xs text-zinc-500">{selectedCategory.description}</p>
                         </div>
+                        <div className="ml-auto flex items-center gap-2">
+                            <button 
+                                onClick={() => setIsConfigColumnsModalOpen(true)}
+                                className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 rounded-lg transition-colors"
+                            >
+                                <FiSettings className="w-4 h-4" /> Configure Columns
+                            </button>
+                            <button 
+                                onClick={() => { setCurrentEntry(null); setIsEntryModalOpen(true); }}
+                                className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-lg shadow-indigo-500/20"
+                            >
+                                <FiPlus className="w-4 h-4" /> Log Entry
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <button 
-                            onClick={() => setIsConfigColumnsModalOpen(true)}
-                            className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 rounded-lg transition-colors"
-                        >
-                            <FiSettings className="w-4 h-4" /> Configure Columns
-                        </button>
-                        <button 
-                            onClick={() => { setCurrentEntry(null); setIsEntryModalOpen(true); }}
-                            className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-lg shadow-indigo-500/20"
-                        >
-                            <FiPlus className="w-4 h-4" /> Log Entry
-                        </button>
-                    </div>
-                </header>
 
-                <main className="pt-24 pb-12 px-6 lg:px-12 overflow-x-auto">
                     {selectedCategory.schema_definition.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-[50vh] text-zinc-500 gap-4">
                             <FiAlertTriangle className="w-12 h-12 opacity-50" />
@@ -487,15 +484,6 @@ export default function LoggerPage() {
     // View: Hub (List of Categories)
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans">
-             <header className="h-20 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur fixed top-0 w-full z-10 flex items-center justify-between px-6 lg:px-12">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                        <FiHash className="text-white w-6 h-6" />
-                    </div>
-                    <h1 className="text-2xl font-bold tracking-tight">Logger</h1>
-                </div>
-            </header>
-
             <main className="pt-24 pb-12 px-6 lg:px-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {/* Create New Card */}
