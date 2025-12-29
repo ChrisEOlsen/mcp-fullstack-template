@@ -403,7 +403,7 @@ const TodoPage = () => {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-indigo-500/30">
-      <main className="pt-24 pb-12 px-6 lg:px-12">
+      <main className="pt-24 pb-12 px-4 md:px-8 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           
           {/* Uncategorized "Inbox" List */}

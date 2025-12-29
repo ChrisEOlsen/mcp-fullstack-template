@@ -37,7 +37,7 @@ const AppCard = ({ href, title, description, icon: Icon, colorClass }) => {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-indigo-500/30 flex flex-col justify-center items-center p-6">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-indigo-500/30 flex flex-col justify-start items-center p-6 pt-32 pb-12">
       <div className="max-w-4xl w-full">
         <div className="text-center mb-16">
           <motion.h1 

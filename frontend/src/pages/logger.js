@@ -308,28 +308,30 @@ export default function LoggerPage() {
     if (selectedCategory) {
         return (
             <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans">
-                <main className="pt-24 pb-12 px-6 lg:px-12 overflow-x-auto">
-                    <div className="flex items-center gap-4 mb-8">
-                        <button 
-                            onClick={() => setSelectedCategory(null)} 
-                            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-800 text-zinc-400 transition-colors"
-                        >
-                            <FiArrowLeft />
-                        </button>
-                        <div>
-                            <h1 className="text-xl font-bold tracking-tight">{selectedCategory.title}</h1>
-                            <p className="text-xs text-zinc-500">{selectedCategory.description}</p>
+                <main className="pt-24 pb-12 px-4 md:px-8 lg:px-12 overflow-x-auto">
+                    <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
+                        <div className="flex items-center gap-4">
+                            <button 
+                                onClick={() => setSelectedCategory(null)} 
+                                className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-800 text-zinc-400 transition-colors"
+                            >
+                                <FiArrowLeft />
+                            </button>
+                            <div>
+                                <h1 className="text-xl font-bold tracking-tight">{selectedCategory.title}</h1>
+                                <p className="text-xs text-zinc-500">{selectedCategory.description}</p>
+                            </div>
                         </div>
-                        <div className="ml-auto flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2 md:ml-auto">
                             <button 
                                 onClick={() => setIsConfigColumnsModalOpen(true)}
-                                className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 rounded-lg transition-colors"
+                                className="flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 rounded-lg transition-colors border border-zinc-800 md:border-transparent"
                             >
-                                <FiSettings className="w-4 h-4" /> Configure Columns
+                                <FiSettings className="w-4 h-4" /> <span className="md:hidden lg:inline">Configure Columns</span><span className="hidden md:inline lg:hidden">Columns</span>
                             </button>
                             <button 
                                 onClick={() => { setCurrentEntry(null); setIsEntryModalOpen(true); }}
-                                className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-lg shadow-indigo-500/20"
+                                className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-lg shadow-indigo-500/20 flex-1 md:flex-none justify-center"
                             >
                                 <FiPlus className="w-4 h-4" /> Log Entry
                             </button>
@@ -353,15 +355,15 @@ export default function LoggerPage() {
                                 <table className="min-w-full divide-y divide-zinc-800">
                                     <thead className="bg-zinc-900/50">
                                         <tr>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                                            <th scope="col" className="px-3 md:px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
                                                 Date
                                             </th>
                                             {selectedCategory.schema_definition.map(col => (
-                                                <th key={col.id} scope="col" className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                                                <th key={col.id} scope="col" className="px-3 md:px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
                                                     {col.name}
                                                 </th>
                                             ))}
-                                            <th scope="col" className="relative px-6 py-3">
+                                            <th scope="col" className="relative px-3 md:px-6 py-3">
                                                 <span className="sr-only">Actions</span>
                                             </th>
                                         </tr>
@@ -376,13 +378,13 @@ export default function LoggerPage() {
                                         ) : (
                                             activeEntries.map((entry) => (
                                                 <tr key={entry.id} className="hover:bg-zinc-900/30 transition-colors group">
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
+                                                    <td className="px-3 md:px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
                                                         {new Date(entry.logged_at).toLocaleString()}
                                                     </td>
                                                     {selectedCategory.schema_definition.map(col => {
                                                         const val = entry.data[col.id];
                                                         return (
-                                                            <td key={col.id} className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
+                                                            <td key={col.id} className="px-3 md:px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
                                                                 {col.type === 'checkbox' ? (
                                                                     val ? <span className="text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded text-xs">Yes</span> : <span className="text-zinc-600 bg-zinc-800 px-2 py-0.5 rounded text-xs">No</span>
                                                                 ) : col.type === 'date' ? (
@@ -393,7 +395,7 @@ export default function LoggerPage() {
                                                             </td>
                                                         );
                                                     })}
-                                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <td className="px-3 md:px-6 py-4 whitespace-nowrap text-right text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
                                                         <button 
                                                             onClick={() => { setCurrentEntry(entry); setIsEntryModalOpen(true); }}
                                                             className="text-zinc-400 hover:text-indigo-400 mr-3"
@@ -484,7 +486,7 @@ export default function LoggerPage() {
     // View: Hub (List of Categories)
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans">
-            <main className="pt-24 pb-12 px-6 lg:px-12">
+            <main className="pt-24 pb-12 px-4 md:px-8 lg:px-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {/* Create New Card */}
                     <motion.div
