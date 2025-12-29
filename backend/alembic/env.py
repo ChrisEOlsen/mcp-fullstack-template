@@ -9,7 +9,7 @@ from alembic import context
 
 # Import your models here for 'autogenerate' support
 from app.db.base_class import Base
-from app.models.message import Message
+from app import models
 # --- Add any other models you create here ---
 
 load_dotenv()
