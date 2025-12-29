@@ -1,0 +1,28 @@
+[
+  {
+    "name": "logger_category",
+    "type": "resource",
+    "timestamp": 1766967769.2888699,
+    "files": [
+      "/workspace/backend/app/models/logger_category.py",
+      "/workspace/backend/app/db/schemas/logger_category.py",
+      "/workspace/backend/app/crud/crud_logger_category.py",
+      "/workspace/backend/app/api/v1/endpoints/logger_categories.py",
+      "/workspace/frontend/src/pages/api/logger_categories/index.js",
+      "/workspace/frontend/src/pages/api/logger_categories/[logger_category_id].js"
+    ]
+  },
+  {
+    "name": "logger_entry",
+    "type": "resource",
+    "timestamp": 1766967769.29497,
+    "files": [
+      "/workspace/backend/app/models/logger_entry.py",
+      "/workspace/backend/app/db/schemas/logger_entry.py",
+      "/workspace/backend/app/crud/crud_logger_entry.py",
+      "/workspace/backend/app/api/v1/endpoints/logger_entries.py",
+      "/workspace/frontend/src/pages/api/logger_entries/index.js",
+      "/workspace/frontend/src/pages/api/logger_entries/[logger_entry_id].js"
+    ]
+  }
+]
