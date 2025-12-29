@@ -13,7 +13,7 @@
 
 **The AI-Native Web Starter.**
 
-This project is a production-ready template designed to bridge the gap between modern web development and AI agents. By integrating the Model Context Protocol (MCP) directly into the backend, it empowers your AI assistant to understand, scaffold, and manage your application's infrastructure in real-time, making development truly "Easy Breezy".
+This project is a production-ready template designed to bridge the gap between modern web development and AI agents. By integrating the Model Context Protocol (MCP) directly into the backend, it empowers your AI assistant to understand, scaffold, and manage your application's infrastructure in real-time, making development truly "Easy".
 
 ## 🚀 Features
 
